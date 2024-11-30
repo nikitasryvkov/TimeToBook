@@ -2,6 +2,8 @@ package com.web.time_to_book.models;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -15,14 +17,17 @@ public class User extends BaseEntity {
     private String phoneNumber;
     private String avatarURL;
     private Long numberOfAppointments;
+    private Role role;
 
-    public User(String firstName, String lastName, String username, String email, String password, String phoneNUmber) {
+    public User(String firstName, String lastName, String username, String email, String password, String phoneNUmber,
+            Role role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNUmber;
+        this.role = role;
     }
 
     protected User() {
@@ -63,8 +68,15 @@ public class User extends BaseEntity {
         return avatarURL;
     }
 
+    @Column(name = "number_appointments")
     public Long getNumberOfAppointments() {
         return numberOfAppointments;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "role_id", referencedColumnName = "id")
+    public Role getRole() {
+        return role;
     }
 
     public void setFirstName(String firstName) {
@@ -97,5 +109,9 @@ public class User extends BaseEntity {
 
     public void setNumberOfAppointments(Long numberOfAppointments) {
         this.numberOfAppointments = numberOfAppointments;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
