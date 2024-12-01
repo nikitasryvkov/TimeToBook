@@ -11,14 +11,14 @@ public class UserResponseDTO {
     private Long numberOfAppointments;
 
     public UserResponseDTO(String firstName, String lastName, String username, String email, String password,
-            String phoneNUmber, String avatarURL) {
+            String phoneNUmber, Long numberOfAppointments) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNUmber;
-        this.avatarURL = avatarURL;
+        this.numberOfAppointments = numberOfAppointments;
     }
 
     protected UserResponseDTO() {

@@ -21,7 +21,7 @@ public class UserRequestDTO {
         this.avatarURL = avatarURL;
     }
 
-    protected UserRequestDTO() {
+    public UserRequestDTO() {
     }
 
     public String getFirstName() {
