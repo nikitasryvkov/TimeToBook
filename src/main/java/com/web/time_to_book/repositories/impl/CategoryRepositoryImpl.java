@@ -1,5 +1,7 @@
 package com.web.time_to_book.repositories.impl;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import com.web.time_to_book.models.Category;
@@ -16,5 +18,10 @@ public class CategoryRepositoryImpl extends CRUDRepository<Category> implements 
 
     protected CategoryRepositoryImpl() {
         super(Category.class);
+    }
+
+    @Override
+    public List<Category> findAll() {
+        return entityManager.createQuery("SELECT c FROM Category c", Category.class).getResultList();
     }
 }

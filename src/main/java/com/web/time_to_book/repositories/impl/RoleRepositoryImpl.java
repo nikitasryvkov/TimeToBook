@@ -1,5 +1,6 @@
 package com.web.time_to_book.repositories.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -22,8 +23,13 @@ public class RoleRepositoryImpl extends CRUDRepository<Role> implements RoleRepo
 
     @Override
     public Optional<Role> findByName(String name) {
-        return Optional.ofNullable(entityManager.createQuery("SELECT r FROM Role WHERE r.name = :name", Role.class)
+        return Optional.ofNullable(entityManager.createQuery("SELECT r FROM Role r WHERE r.name = :name", Role.class)
                 .setParameter("name", name)
                 .getSingleResult());
+    }
+
+    @Override
+    public List<Role> findAll() {
+        return entityManager.createQuery("SELECT r FROM Role r", Role.class).getResultList();
     }
 }
