@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.web.time_to_book.dtos.RoleDTO;
 import com.web.time_to_book.exceptions.role.InvalidRoleDataException;
+import com.web.time_to_book.exceptions.role.RoleNotFoundException;
 import com.web.time_to_book.models.Role;
 import com.web.time_to_book.repositories.RoleRepository;
 import com.web.time_to_book.services.RoleService;
@@ -53,4 +54,21 @@ public class RoleServiceImpl implements RoleService {
         return roleRepository.findAll().stream().map(role -> modelMapper.map(role, RoleDTO.class)).toList();
     }
 
+    @Override
+    public void updateRole(RoleDTO roleDTO) {
+        if (!validationUtil.isValid(roleDTO)) {
+            this.validationUtil
+                    .violations(roleDTO)
+                    .stream()
+                    .map(ConstraintViolation::getMessage)
+                    .forEach(System.out::println);
+
+            throw new InvalidRoleDataException();
+        }
+
+        Role role = roleRepository.findByName(roleDTO.getName())
+                .orElseThrow(() -> new RoleNotFoundException(roleDTO.getName()));
+        role.setName(roleDTO.getName());
+        roleRepository.update(role);
+    }
 }

@@ -84,9 +84,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponseDTO> findAllUsers() {
-        List<User> users = userRepository.findAll();
-
-        return users.stream().map(user -> modelMapper.map(users, UserResponseDTO.class)).collect(Collectors.toList());
+        return userRepository.findAll().stream().map(user -> modelMapper.map(user, UserResponseDTO.class))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -94,5 +93,10 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
 
         return modelMapper.map(user, UserResponseDTO.class);
+    }
+
+    @Override
+    public UUID verify(String name) {
+        return userRepository.findByName(name).orElseThrow(() -> new UserNotFoundException(name));
     }
 }

@@ -3,15 +3,14 @@ package com.web.time_to_book.services;
 import java.util.List;
 import java.util.UUID;
 
-import com.web.time_to_book.dtos.request.CategoryRequestDTO;
-import com.web.time_to_book.dtos.response.CategoryResponseDTO;
+import com.web.time_to_book.dtos.CategoryDTO;
 
 public interface CategoryService {
-    void addCategory(CategoryRequestDTO userDTO);
+    void addCategory(CategoryDTO userDTO);
 
-    void updateCategory(UUID id, CategoryRequestDTO userDTO);
+    void updateCategory(UUID id, CategoryDTO userDTO);
 
-    List<CategoryResponseDTO> findAllCategories();
+    List<CategoryDTO> findAllCategories();
 
-    CategoryResponseDTO findById(UUID id);
+    CategoryDTO findById(UUID id);
 }

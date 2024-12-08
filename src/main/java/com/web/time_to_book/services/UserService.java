@@ -14,4 +14,6 @@ public interface UserService {
     List<UserResponseDTO> findAllUsers();
 
     UserResponseDTO findById(UUID id);
+
+    UUID verify(String name);
 }
