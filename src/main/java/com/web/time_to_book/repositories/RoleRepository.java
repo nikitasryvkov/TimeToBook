@@ -10,5 +10,7 @@ public interface RoleRepository {
 
     Role save(Role role);
 
+    Role update(Role role);
+
     List<Role> findAll();
 }

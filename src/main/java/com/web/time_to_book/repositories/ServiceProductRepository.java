@@ -1,5 +1,6 @@
 package com.web.time_to_book.repositories;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,4 +12,6 @@ public interface ServiceProductRepository {
     ServiceProduct save(ServiceProduct service);
 
     ServiceProduct update(ServiceProduct service);
+
+    List<ServiceProduct> findAll();
 }

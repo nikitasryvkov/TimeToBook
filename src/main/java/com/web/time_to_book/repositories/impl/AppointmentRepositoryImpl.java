@@ -1,5 +1,8 @@
 package com.web.time_to_book.repositories.impl;
 
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.stereotype.Repository;
 
 import com.web.time_to_book.models.Appointment;
@@ -16,5 +19,16 @@ public class AppointmentRepositoryImpl extends CRUDRepository<Appointment> imple
 
     protected AppointmentRepositoryImpl() {
         super(Appointment.class);
+    }
+
+    @Override
+    public List<Appointment> findAll() {
+        return entityManager.createQuery("SELECT a FROM Appointment a", Appointment.class).getResultList();
+    }
+
+    @Override
+    public List<Appointment> findAllBy(UUID id) {
+        return entityManager.createQuery("SELECT a FROM Appointment a WHERE a.clientId = :id", Appointment.class)
+                .setParameter("id", id).getResultList();
     }
 }

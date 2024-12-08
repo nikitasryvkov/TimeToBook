@@ -1,5 +1,6 @@
 package com.web.time_to_book.repositories;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,4 +12,8 @@ public interface AppointmentRepository {
     Appointment save(Appointment service);
 
     Appointment update(Appointment service);
+
+    List<Appointment> findAll();
+
+    List<Appointment> findAllBy(UUID id);
 }

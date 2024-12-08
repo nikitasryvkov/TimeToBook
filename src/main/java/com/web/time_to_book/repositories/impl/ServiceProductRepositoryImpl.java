@@ -1,5 +1,7 @@
 package com.web.time_to_book.repositories.impl;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import com.web.time_to_book.models.ServiceProduct;
@@ -16,5 +18,10 @@ public class ServiceProductRepositoryImpl extends CRUDRepository<ServiceProduct>
 
     public ServiceProductRepositoryImpl() {
         super(ServiceProduct.class);
+    }
+
+    @Override
+    public List<ServiceProduct> findAll() {
+        return entityManager.createQuery("SELECT s FROM ServiceProduct s", ServiceProduct.class).getResultList();
     }
 }

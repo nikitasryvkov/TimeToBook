@@ -1,5 +1,6 @@
 package com.web.time_to_book.repositories;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,4 +12,8 @@ public interface FeedbackRepository {
     Feedback save(Feedback service);
 
     Feedback update(Feedback service);
+
+    List<Feedback> findAll();
+
+    List<Feedback> findAllBy(UUID id);
 }

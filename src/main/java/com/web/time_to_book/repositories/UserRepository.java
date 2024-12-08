@@ -14,4 +14,6 @@ public interface UserRepository {
     User update(User user);
 
     List<User> findAll();
+
+    Optional<UUID> findByName(String name);
 }
