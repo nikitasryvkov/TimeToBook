@@ -1,7 +1,5 @@
 package com.web.time_to_book.dtos.request;
 
-import java.util.UUID;
-
 public class UserRequestDTO {
     public String id;
     private String firstName;
