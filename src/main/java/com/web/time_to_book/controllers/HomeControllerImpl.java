@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.controllers.done.HomeController;
 import com.example.demo.viewmodel.category.CategoryViewModel;
-import com.example.demo.viewmodel.done.BaseViewModel;
-import com.example.demo.viewmodel.done.HomeViewModel;
+import com.example.demo.viewmodel.pages.BaseViewModel;
+import com.example.demo.viewmodel.pages.HomeViewModel;
 import com.web.time_to_book.services.CategoryService;
 
 @Controller

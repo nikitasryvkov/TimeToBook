@@ -1,6 +1,5 @@
 package com.web.time_to_book.services.impl;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -30,100 +29,100 @@ import jakarta.validation.ConstraintViolation;
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
 
-        private AppointmentRepository appointmentRepository;
-        private UserRepository userRepository;
-        private ServiceProductRepository serviceProductRepository;
-        private ModelMapper modelMapper;
-        private final ValidationUtil validationUtil;
+    private AppointmentRepository appointmentRepository;
+    private UserRepository userRepository;
+    private ServiceProductRepository serviceProductRepository;
+    private ModelMapper modelMapper;
+    private final ValidationUtil validationUtil;
 
-        public AppointmentServiceImpl(ValidationUtil validationUtil) {
-                this.validationUtil = validationUtil;
+    public AppointmentServiceImpl(ValidationUtil validationUtil) {
+        this.validationUtil = validationUtil;
+    }
+
+    @Autowired
+    public void setAppointmentServiceImpl(AppointmentRepository appointmentRepository,
+            UserRepository userRepository,
+            ServiceProductRepository serviceProductRepository, ModelMapper modelMapper) {
+        this.appointmentRepository = appointmentRepository;
+        this.userRepository = userRepository;
+        this.serviceProductRepository = serviceProductRepository;
+        this.modelMapper = modelMapper;
+    }
+
+    @Override
+    public void addAppointment(AppointmentRequestDTO appointmentDTO) {
+        if (!this.validationUtil.isValid(appointmentDTO)) {
+            this.validationUtil
+                    .violations(appointmentDTO)
+                    .stream()
+                    .map(ConstraintViolation::getMessage)
+                    .forEach(System.out::println);
+            throw new InvalidAppointmentDataException();
         }
 
-        @Autowired
-        public void setAppointmentServiceImpl(AppointmentRepository appointmentRepository,
-                        UserRepository userRepository,
-                        ServiceProductRepository serviceProductRepository, ModelMapper modelMapper) {
-                this.appointmentRepository = appointmentRepository;
-                this.userRepository = userRepository;
-                this.serviceProductRepository = serviceProductRepository;
-                this.modelMapper = modelMapper;
+        User client = userRepository.findById(appointmentDTO.getClientId())
+                .orElseThrow(() -> new UserNotFoundException(appointmentDTO.getClientId()));
+        User master = userRepository.findById(appointmentDTO.getMasterId())
+                .orElseThrow(() -> new UserNotFoundException(appointmentDTO.getMasterId()));
+        ServiceProduct service = serviceProductRepository.findById(appointmentDTO.getServiceId())
+                .orElseThrow(() -> new ServiceProductNotFoundException(appointmentDTO.getServiceId()));
+
+        Appointment appointment = new Appointment(
+                appointmentDTO.getRecordTime(),
+                client,
+                master,
+                service);
+
+        appointmentRepository.save(appointment);
+    }
+
+    @Override
+    public void updateAppointment(UUID id, AppointmentRequestDTO appointmentDTO) {
+        if (!this.validationUtil.isValid(appointmentDTO)) {
+            this.validationUtil
+                    .violations(appointmentDTO)
+                    .stream()
+                    .map(ConstraintViolation::getMessage)
+                    .forEach(System.out::println);
+            throw new InvalidAppointmentDataException();
         }
 
-        @Override
-        public void addAppointment(AppointmentRequestDTO appointmentDTO) {
-                if (!this.validationUtil.isValid(appointmentDTO)) {
-                        this.validationUtil
-                                        .violations(appointmentDTO)
-                                        .stream()
-                                        .map(ConstraintViolation::getMessage)
-                                        .forEach(System.out::println);
-                        throw new InvalidAppointmentDataException();
-                }
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new AppointmentNotFoundException(id));
+        appointment.setRecordTime(appointmentDTO.getRecordTime());
+        User client = userRepository.findById(appointmentDTO.getClientId())
+                .orElseThrow(() -> new UserNotFoundException(appointmentDTO.getClientId()));
+        appointment.setClient(client);
+        User master = userRepository.findById(appointmentDTO.getMasterId())
+                .orElseThrow(() -> new UserNotFoundException(appointmentDTO.getMasterId()));
+        appointment.setMaster(master);
+        ServiceProduct service = serviceProductRepository.findById(appointmentDTO.getServiceId())
+                .orElseThrow(() -> new ServiceProductNotFoundException(appointmentDTO.getServiceId()));
+        appointment.setService(service);
 
-                User client = userRepository.findById(appointmentDTO.getClientId())
-                                .orElseThrow(() -> new UserNotFoundException(appointmentDTO.getClientId()));
-                User master = userRepository.findById(appointmentDTO.getMasterId())
-                                .orElseThrow(() -> new UserNotFoundException(appointmentDTO.getMasterId()));
-                ServiceProduct service = serviceProductRepository.findById(appointmentDTO.getServiceId())
-                                .orElseThrow(() -> new ServiceProductNotFoundException(appointmentDTO.getServiceId()));
+        appointmentRepository.update(appointment);
+    }
 
-                Appointment appointment = new Appointment(
-                                appointmentDTO.getRecordTime(),
-                                client,
-                                master,
-                                service);
+    @Override
+    public List<AppointmentResponseDTO> findAllAppointments() {
+        return appointmentRepository.findAll().stream()
+                .map(appointment -> modelMapper.map(appointment, AppointmentResponseDTO.class))
+                .collect(Collectors.toList());
+    }
 
-                appointmentRepository.save(appointment);
-        }
+    @Override
+    public AppointmentDTO findById(UUID id) {
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new AppointmentNotFoundException(id));
 
-        @Override
-        public void updateAppointment(UUID id, AppointmentRequestDTO appointmentDTO) {
-                if (!this.validationUtil.isValid(appointmentDTO)) {
-                        this.validationUtil
-                                        .violations(appointmentDTO)
-                                        .stream()
-                                        .map(ConstraintViolation::getMessage)
-                                        .forEach(System.out::println);
-                        throw new InvalidAppointmentDataException();
-                }
+        return modelMapper.map(appointment, AppointmentDTO.class);
+    }
 
-                Appointment appointment = appointmentRepository.findById(id)
-                                .orElseThrow(() -> new AppointmentNotFoundException(id));
-                appointment.setRecordTime(appointmentDTO.getRecordTime());
-                User client = userRepository.findById(appointmentDTO.getClientId())
-                                .orElseThrow(() -> new UserNotFoundException(appointmentDTO.getClientId()));
-                appointment.setClient(client);
-                User master = userRepository.findById(appointmentDTO.getMasterId())
-                                .orElseThrow(() -> new UserNotFoundException(appointmentDTO.getMasterId()));
-                appointment.setMaster(master);
-                ServiceProduct service = serviceProductRepository.findById(appointmentDTO.getServiceId())
-                                .orElseThrow(() -> new ServiceProductNotFoundException(appointmentDTO.getServiceId()));
-                appointment.setService(service);
-
-                appointmentRepository.update(appointment);
-        }
-
-        @Override
-        public List<AppointmentResponseDTO> findAllAppointments() {
-                return appointmentRepository.findAll().stream()
-                                .map(appointment -> modelMapper.map(appointment, AppointmentResponseDTO.class))
-                                .collect(Collectors.toList());
-        }
-
-        @Override
-        public AppointmentDTO findById(UUID id) {
-                Appointment appointment = appointmentRepository.findById(id)
-                                .orElseThrow(() -> new AppointmentNotFoundException(id));
-
-                return modelMapper.map(appointment, AppointmentDTO.class);
-        }
-
-        @Override
-        public List<AppointmentResponseDTO> findAllAppointmentsById(UUID id) {
-                return appointmentRepository.findAllBy(id).stream()
-                                .map(appointment -> modelMapper.map(appointment, AppointmentResponseDTO.class))
-                                .collect(Collectors.toList());
-        }
+    @Override
+    public List<AppointmentResponseDTO> findAllAppointmentsById(UUID id) {
+        return appointmentRepository.findAllBy(id).stream()
+                .map(appointment -> modelMapper.map(appointment, AppointmentResponseDTO.class))
+                .collect(Collectors.toList());
+    }
 
 }

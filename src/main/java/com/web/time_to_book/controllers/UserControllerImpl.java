@@ -8,18 +8,19 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.demo.controllers.done.UserController;
-import com.example.demo.forms.done.UserUpdateForm;
-import com.example.demo.viewmodel.done.BaseViewModel;
-import com.example.demo.viewmodel.done.UserProfileViewModel;
+import com.example.demo.forms.done.UserProfileUpdateForm;
+import com.example.demo.viewmodel.pages.BaseViewModel;
+import com.example.demo.viewmodel.user.UserProfileUpdateViewModel;
+import com.example.demo.viewmodel.user.UserProfileViewModel;
+import com.web.time_to_book.dtos.request.UserRequestDTO;
 import com.web.time_to_book.services.UserService;
 
 import jakarta.validation.Valid;
 
 @Controller
-@RequestMapping("/user")
 public class UserControllerImpl implements UserController {
 
     private UserService userService;
@@ -39,23 +40,37 @@ public class UserControllerImpl implements UserController {
                 userResponseDTO.getLastName(),
                 userResponseDTO.getUsername(),
                 userResponseDTO.getEmail(),
-                userResponseDTO.getEmail(),
+                userResponseDTO.getPhoneNumber(),
                 userResponseDTO.getNumberOfAppointments());
 
-        model.addAttribute("user", viewModel);
+        model.addAttribute("model", viewModel);
         return "profile";
     }
 
     @Override
-    public String updateUserForm(UUID id, Model model) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateUserForm'");
+    @GetMapping("/{id}/update")
+    public String updateUserForm(@PathVariable("id") UUID id, Model model) {
+        var updateViewModel = new UserProfileUpdateForm("", "", "", "", "", "*****");
+        var viewModel = new UserProfileUpdateViewModel(createBaseViewModel("Редактирование профиля"), updateViewModel);
+        model.addAttribute("model", viewModel);
+        return "profile-update";
     }
 
     @Override
-    public String updateUser(@Valid UUID id, UserUpdateForm form, BindingResult bindingResult, Model model) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateUser'");
+    @PostMapping("/{id}/update")
+    public String updateUser(@Valid @PathVariable("id") UUID id, UserProfileUpdateForm form,
+            BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            var updateViewModel = new UserProfileUpdateForm("", "", "", "", "", "*****");
+            var viewModel = new UserProfileUpdateViewModel(createBaseViewModel("Редактирование профиля"),
+                    updateViewModel);
+            model.addAttribute("model", viewModel);
+            return "profile-update";
+        }
+
+        userService.updateUser(id, new UserRequestDTO(form.firstName(), form.lastName(), form.userName(), form.email(),
+                form.password(), form.phoneNumber()));
+        return "redirect:/user/" + id;
     }
 
     @Override
