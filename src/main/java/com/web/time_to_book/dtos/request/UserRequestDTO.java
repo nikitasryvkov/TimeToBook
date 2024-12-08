@@ -1,6 +1,9 @@
 package com.web.time_to_book.dtos.request;
 
+import java.util.UUID;
+
 public class UserRequestDTO {
+    public String id;
     private String firstName;
     private String lastName;
     private String username;
@@ -11,17 +14,20 @@ public class UserRequestDTO {
     private String roleName;
 
     public UserRequestDTO(String firstName, String lastName, String username, String email, String password,
-            String phoneNUmber, String avatarURL) {
+            String phoneNUmber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNUmber;
-        this.avatarURL = avatarURL;
     }
 
     public UserRequestDTO() {
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getFirstName() {
@@ -54,6 +60,10 @@ public class UserRequestDTO {
 
     public String getRoleName() {
         return roleName;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setFirstName(String firstName) {
