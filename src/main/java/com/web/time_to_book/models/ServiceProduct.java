@@ -11,7 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "user_service")
+@Table(name = "service_product")
 public class ServiceProduct extends BaseEntity {
     private String title;
     private String description;
@@ -20,14 +20,13 @@ public class ServiceProduct extends BaseEntity {
     private User createdBy;
     private ServiceProductStatusEnum status;
 
-    public ServiceProduct(String title, String description, Category category, Long price, User createdBy,
-            ServiceProductStatusEnum status) {
+    public ServiceProduct(String title, String description, Category category, Long price, User createdBy) {
         this.title = title;
         this.description = description;
         this.category = category;
         this.price = price;
         this.createdBy = createdBy;
-        this.status = status;
+        this.status = ServiceProductStatusEnum.PUBLISHED;
     }
 
     protected ServiceProduct() {
@@ -44,7 +43,7 @@ public class ServiceProduct extends BaseEntity {
     }
 
     @ManyToOne
-    @JoinColumn(name = "service_category_id")
+    @JoinColumn(name = "category_id")
     public Category getCategory() {
         return category;
     }

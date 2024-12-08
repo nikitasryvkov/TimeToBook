@@ -9,14 +9,14 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "service_category")
+@Table(name = "category")
 public class Category extends BaseEntity {
     private String name;
     private CategoryStatusEnum status;
 
     public Category(String name, CategoryStatusEnum status) {
         this.name = name;
-        this.status = status;
+        this.status = CategoryStatusEnum.PUBLISHED;
     }
 
     protected Category() {

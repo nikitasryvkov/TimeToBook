@@ -22,14 +22,13 @@ public class Appointment extends BaseEntity {
     private ServiceProduct service;
     private AppointmentStatusEnum status;
 
-    public Appointment(LocalDateTime creationDate, LocalDateTime recordTime, User client, User master,
-            ServiceProduct service, AppointmentStatusEnum status) {
-        this.createdAt = creationDate;
+    public Appointment(LocalDateTime recordTime, User client, User master, ServiceProduct service) {
+        this.createdAt = LocalDateTime.now();
         this.recordTime = recordTime;
         this.client = client;
         this.master = master;
         this.service = service;
-        this.status = status;
+        this.status = AppointmentStatusEnum.WAITING_PAYMENT_CLIENT;
     }
 
     protected Appointment() {
