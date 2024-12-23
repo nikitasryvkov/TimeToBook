@@ -1,9 +1,12 @@
 package com.web.time_to_book.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -16,21 +19,20 @@ public class User extends BaseEntity {
     private String password;
     private String phoneNumber;
     private String avatarURL;
-    private Long numberOfAppointments;
-    private Role role;
+    private Integer numberOfAppointments;
+    private List<Role> roles;
 
-    public User(String firstName, String lastName, String username, String email, String password, String phoneNUmber,
-            Role role) {
+    public User() {
+        this.roles = new ArrayList<>();
+    }
+
+    public User(String firstName, String lastName, String username, String email, String password, String phoneNUmber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNUmber;
-        this.role = role;
-    }
-
-    protected User() {
     }
 
     @Column(name = "first_name")
@@ -69,14 +71,13 @@ public class User extends BaseEntity {
     }
 
     @Column(name = "number_appointments")
-    public Long getNumberOfAppointments() {
+    public Integer getNumberOfAppointments() {
         return numberOfAppointments;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "role_id", referencedColumnName = "id")
-    public Role getRole() {
-        return role;
+    @ManyToMany(fetch = FetchType.EAGER)
+    public List<Role> getRoles() {
+        return roles;
     }
 
     public void setFirstName(String firstName) {
@@ -107,11 +108,11 @@ public class User extends BaseEntity {
         this.avatarURL = avatarURL;
     }
 
-    public void setNumberOfAppointments(Long numberOfAppointments) {
+    public void setNumberOfAppointments(Integer numberOfAppointments) {
         this.numberOfAppointments = numberOfAppointments;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 }

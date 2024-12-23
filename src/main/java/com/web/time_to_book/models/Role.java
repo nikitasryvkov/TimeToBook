@@ -1,40 +1,32 @@
 package com.web.time_to_book.models;
 
-import java.util.Set;
+import com.web.time_to_book.models.enums.UserRoles;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "roles")
 public class Role extends BaseEntity {
-    private String name;
-    private Set<User> users;
+    private UserRoles name;
 
-    public Role(String name) {
+    public Role(UserRoles name) {
         this.name = name;
     }
 
     protected Role() {
     }
 
-    @Column(name = "name")
-    public String getName() {
+    @Enumerated(EnumType.STRING)
+    @Column(unique = true)
+    public UserRoles getName() {
         return name;
     }
 
-    @OneToMany(mappedBy = "role", targetEntity = User.class)
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setName(String name) {
+    public void setName(UserRoles name) {
         this.name = name;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
     }
 }

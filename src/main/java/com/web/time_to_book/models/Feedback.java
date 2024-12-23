@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -13,15 +13,13 @@ import jakarta.persistence.Table;
 public class Feedback extends BaseEntity {
     private LocalDateTime createdAt;
     private String text;
-    private ServiceProduct service;
-    private User createdBy;
+    private Appointment appointment;
     private Integer estimation;
 
-    public Feedback(String text, ServiceProduct service, User createdBy, Integer estimation) {
+    public Feedback(String text, Appointment appointment, Integer estimation) {
         this.createdAt = LocalDateTime.now();
         this.text = text;
-        this.service = service;
-        this.createdBy = createdBy;
+        this.appointment = appointment;
         this.estimation = estimation;
     }
 
@@ -38,16 +36,10 @@ public class Feedback extends BaseEntity {
         return text;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "service_id")
-    public ServiceProduct getService() {
-        return service;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    public User getCreatedBy() {
-        return createdBy;
+    @OneToOne
+    @JoinColumn(name = "appointment_id")
+    public Appointment getAppointment() {
+        return appointment;
     }
 
     @Column(name = "estimation")
@@ -63,12 +55,8 @@ public class Feedback extends BaseEntity {
         this.text = text;
     }
 
-    public void setService(ServiceProduct service) {
-        this.service = service;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
     }
 
     public void setEstimation(Integer estimation) {
