@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
 import com.web.time_to_book.models.Role;
+import com.web.time_to_book.models.enums.UserRoles;
 import com.web.time_to_book.repositories.RoleRepository;
 
 import jakarta.persistence.EntityManager;
@@ -22,14 +23,19 @@ public class RoleRepositoryImpl extends CRUDRepository<Role> implements RoleRepo
     }
 
     @Override
-    public Optional<Role> findByName(String name) {
+    public Optional<Role> findByName(UserRoles role) {
         return Optional.ofNullable(entityManager.createQuery("SELECT r FROM Role r WHERE r.name = :name", Role.class)
-                .setParameter("name", name)
+                .setParameter("name", role)
                 .getSingleResult());
     }
 
     @Override
     public List<Role> findAll() {
         return entityManager.createQuery("SELECT r FROM Role r", Role.class).getResultList();
+    }
+
+    @Override
+    public long count() {
+        return entityManager.createQuery("SELECT COUNT(r) FROM Role r", Long.class).getSingleResult();
     }
 }

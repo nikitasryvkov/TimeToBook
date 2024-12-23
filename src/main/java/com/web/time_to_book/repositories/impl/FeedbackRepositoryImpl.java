@@ -27,8 +27,22 @@ public class FeedbackRepositoryImpl extends CRUDRepository<Feedback> implements 
     }
 
     @Override
-    public List<Feedback> findAllBy(UUID id) {
-        return entityManager.createQuery("SELECT f FROM Feedback f WHERE f.userId = :id", Feedback.class)
+    public List<Feedback> findAllByUserId(UUID id) {
+        return entityManager
+                .createQuery("SELECT f FROM Feedback f WHERE f.appointment.client.id = :id", Feedback.class)
+                .setParameter("id", id).getResultList();
+    }
+
+    @Override
+    public List<Feedback> findAllByMasterId(UUID id) {
+        return entityManager.createQuery("SELECT f FROM Feedback f WHERE f.appointment.master.id = :id", Feedback.class)
+                .setParameter("id", id).getResultList();
+    }
+
+    @Override
+    public List<Feedback> findAllByServiceId(UUID id) {
+        return entityManager
+                .createQuery("SELECT f FROM Feedback f WHERE f.appointment.service.id = :id", Feedback.class)
                 .setParameter("id", id).getResultList();
     }
 }

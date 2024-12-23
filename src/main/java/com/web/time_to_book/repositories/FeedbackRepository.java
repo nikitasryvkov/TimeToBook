@@ -15,5 +15,9 @@ public interface FeedbackRepository {
 
     List<Feedback> findAll();
 
-    List<Feedback> findAllBy(UUID id);
+    List<Feedback> findAllByUserId(UUID id);
+
+    List<Feedback> findAllByMasterId(UUID id);
+
+    List<Feedback> findAllByServiceId(UUID id);
 }

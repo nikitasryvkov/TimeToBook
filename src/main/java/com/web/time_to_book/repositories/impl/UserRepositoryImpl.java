@@ -7,6 +7,8 @@ import java.util.UUID;
 import org.springframework.stereotype.Repository;
 
 import com.web.time_to_book.models.User;
+import com.web.time_to_book.models.enums.AppointmentStatusEnum;
+import com.web.time_to_book.models.enums.UserRoles;
 import com.web.time_to_book.repositories.UserRepository;
 
 import jakarta.persistence.EntityManager;
@@ -28,9 +30,39 @@ public class UserRepositoryImpl extends CRUDRepository<User> implements UserRepo
     }
 
     @Override
-    public Optional<UUID> findByName(String name) {
+    public Optional<User> findByUsername(String name) {
         return Optional
-                .ofNullable(entityManager.createQuery("SELECT id FROM User u WHERE u.userName = :name", UUID.class)
+                .ofNullable(entityManager.createQuery("SELECT u FROM User u WHERE u.username = :name", User.class)
                         .setParameter("name", name).getSingleResult());
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return Optional.ofNullable(entityManager.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
+                .setParameter("email", email).getSingleResult());
+    }
+
+    @Override
+    public Optional<UUID> findIdByUsername(String name) {
+        return Optional
+                .ofNullable(entityManager.createQuery("SELECT u.id FROM User u WHERE u.username = : name", UUID.class)
+                        .setParameter("name", name).getSingleResult());
+    }
+
+    @Override
+    public List<User> findAllMasters() {
+        return entityManager
+                .createQuery("SELECT DISTINCT u FROM User u JOIN u.roles r WHERE r.name = :roleName",
+                        User.class)
+                .setParameter("roleName", UserRoles.MODERATOR)
+                .getResultList();
+    }
+
+    @Override
+    public Integer countAppointment(UUID id) {
+        return entityManager
+                .createQuery("SELECT COUNT(a) FROM Appointment a WHERE a.client.id = :id AND a.status = :status",
+                        Long.class)
+                .setParameter("id", id).setParameter("status", AppointmentStatusEnum.DONE).getSingleResult().intValue();
     }
 }

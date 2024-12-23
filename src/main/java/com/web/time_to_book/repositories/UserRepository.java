@@ -9,11 +9,19 @@ import com.web.time_to_book.models.User;
 public interface UserRepository {
     Optional<User> findById(UUID id);
 
+    Optional<User> findByUsername(String name);
+
+    Optional<User> findByEmail(String email);
+
     User save(User user);
 
     User update(User user);
 
     List<User> findAll();
 
-    Optional<UUID> findByName(String name);
+    Optional<UUID> findIdByUsername(String name);
+
+    List<User> findAllMasters();
+
+    Integer countAppointment(UUID id);
 }
