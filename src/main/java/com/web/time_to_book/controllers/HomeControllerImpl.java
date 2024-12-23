@@ -2,6 +2,9 @@ package com.web.time_to_book.controllers;
 
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,19 +21,25 @@ import com.web.time_to_book.services.CategoryService;
 @RequestMapping("/")
 public class HomeControllerImpl implements HomeController {
 
+    private static final org.apache.logging.log4j.Logger LOG = LogManager.getLogger(Controller.class);
     private CategoryService categoryService;
+    private ModelMapper modelMapper;
 
     @Autowired
-    public void setHomeController(CategoryService categoryService) {
+    public void setHomeController(CategoryService categoryService, ModelMapper modelMapper) {
         this.categoryService = categoryService;
+        this.modelMapper = modelMapper;
     }
 
     @Override
     @GetMapping
     public String homePage(Model model) {
         var categoryViewModel = categoryService.findAllCategories().stream()
-                .map(category -> new CategoryViewModel(category.getName())).collect(Collectors.toList());
+                .map(category -> modelMapper.map(category, CategoryViewModel.class)).collect(Collectors.toList());
         var viewModel = new HomeViewModel(createBaseViewModel("Главная"), categoryViewModel);
+
+        LOG.log(Level.INFO, "Open home page");
+
         model.addAttribute("model", viewModel);
         return "home";
     }

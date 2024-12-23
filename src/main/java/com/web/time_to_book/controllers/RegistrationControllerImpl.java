@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -32,25 +33,27 @@ public class RegistrationControllerImpl implements RegistrationController {
     @GetMapping
     public String registrationUserForm(Model model) {
         var registrationViewModel = new UserRegistrationForm("", "", "", "", "", "");
-        var viewModel = new RegistrationViewModel(createBaseViewModel("Регистрация"), registrationViewModel);
+        var viewModel = new RegistrationViewModel(createBaseViewModel("Регистрация"));
+        model.addAttribute("form", registrationViewModel);
         model.addAttribute("model", viewModel);
         return "reg";
     }
 
     @Override
     @PostMapping
-    public String registrationUser(@Valid UserRegistrationForm form, BindingResult bindingResult, Model model) {
+    public String registrationUser(@Valid @ModelAttribute("form") UserRegistrationForm form,
+            BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            var registrationViewModel = new UserRegistrationForm("", "", "", "", "", "");
-            var viewModel = new RegistrationViewModel(createBaseViewModel("Регистрация"), registrationViewModel);
+            var viewModel = new RegistrationViewModel(createBaseViewModel("Регистрация"));
+            model.addAttribute("form", form);
             model.addAttribute("model", viewModel);
             return "reg";
         }
 
         UserRequestDTO user = new UserRequestDTO(form.firstName(), form.lastName(), form.userName(), form.email(),
-                form.password(), form.phoneNumber());
-        userService.addUser(user);
-        return "redirect:/";
+                form.phoneNumber(), form.password());
+        userService.register(user);
+        return "redirect:/login";
     }
 
     @Override
