@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.web.time_to_book.dtos.request.AppointmentRequestDTO;
 import com.web.time_to_book.dtos.response.AppointmentDTO;
-import com.web.time_to_book.dtos.response.AppointmentResponseDTO;
 import com.web.time_to_book.exceptions.appointment.AppointmentNotFoundException;
 import com.web.time_to_book.exceptions.appointment.InvalidAppointmentDataException;
 import com.web.time_to_book.exceptions.serviceProduct.ServiceProductNotFoundException;
@@ -18,10 +17,12 @@ import com.web.time_to_book.exceptions.user.UserNotFoundException;
 import com.web.time_to_book.models.Appointment;
 import com.web.time_to_book.models.ServiceProduct;
 import com.web.time_to_book.models.User;
+import com.web.time_to_book.models.enums.AppointmentStatusEnum;
 import com.web.time_to_book.repositories.AppointmentRepository;
 import com.web.time_to_book.repositories.ServiceProductRepository;
 import com.web.time_to_book.repositories.UserRepository;
 import com.web.time_to_book.services.AppointmentService;
+import com.web.time_to_book.services.UserService;
 import com.web.time_to_book.utils.validation.ValidationUtil;
 
 import jakarta.validation.ConstraintViolation;
@@ -34,6 +35,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private ServiceProductRepository serviceProductRepository;
     private ModelMapper modelMapper;
     private final ValidationUtil validationUtil;
+    private UserService userService;
 
     public AppointmentServiceImpl(ValidationUtil validationUtil) {
         this.validationUtil = validationUtil;
@@ -41,12 +43,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Autowired
     public void setAppointmentServiceImpl(AppointmentRepository appointmentRepository,
-            UserRepository userRepository,
-            ServiceProductRepository serviceProductRepository, ModelMapper modelMapper) {
+            UserRepository userRepository, ServiceProductRepository serviceProductRepository, ModelMapper modelMapper,
+            UserService userService) {
         this.appointmentRepository = appointmentRepository;
         this.userRepository = userRepository;
         this.serviceProductRepository = serviceProductRepository;
         this.modelMapper = modelMapper;
+        this.userService = userService;
     }
 
     @Override
@@ -89,24 +92,49 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new AppointmentNotFoundException(id));
-        appointment.setRecordTime(appointmentDTO.getRecordTime());
+        if (appointment.getRecordTime() == appointmentDTO.getRecordTime()) {
+            appointment.setRecordTime(appointment.getRecordTime());
+        } else {
+            appointment.setRecordTime(appointmentDTO.getRecordTime());
+        }
+
         User client = userRepository.findById(appointmentDTO.getClientId())
                 .orElseThrow(() -> new UserNotFoundException(appointmentDTO.getClientId()));
-        appointment.setClient(client);
+        if (appointment.getClient().getId() == appointmentDTO.getClientId()) {
+            appointment.setClient(appointment.getClient());
+        } else {
+            appointment.setClient(client);
+        }
+
         User master = userRepository.findById(appointmentDTO.getMasterId())
                 .orElseThrow(() -> new UserNotFoundException(appointmentDTO.getMasterId()));
-        appointment.setMaster(master);
+        if (appointment.getMaster().getId() == appointmentDTO.getMasterId()) {
+            appointment.setMaster(appointment.getMaster());
+        } else {
+            appointment.setMaster(master);
+        }
+
         ServiceProduct service = serviceProductRepository.findById(appointmentDTO.getServiceId())
                 .orElseThrow(() -> new ServiceProductNotFoundException(appointmentDTO.getServiceId()));
-        appointment.setService(service);
+        if (appointment.getService().getId() == appointmentDTO.getServiceId()) {
+            appointment.setService(appointment.getService());
+        } else {
+            appointment.setService(service);
+        }
+
+        if (appointment.getStatus().toString() == appointmentDTO.getStatus()) {
+            appointment.setStatus(appointment.getStatus());
+        } else {
+            appointment.setStatus(AppointmentStatusEnum.valueOf(appointmentDTO.getStatus()));
+        }
 
         appointmentRepository.update(appointment);
     }
 
     @Override
-    public List<AppointmentResponseDTO> findAllAppointments() {
+    public List<AppointmentDTO> findAllAppointments() {
         return appointmentRepository.findAll().stream()
-                .map(appointment -> modelMapper.map(appointment, AppointmentResponseDTO.class))
+                .map(appointment -> modelMapper.map(appointment, AppointmentDTO.class))
                 .collect(Collectors.toList());
     }
 
@@ -119,10 +147,23 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentResponseDTO> findAllAppointmentsById(UUID id) {
-        return appointmentRepository.findAllBy(id).stream()
-                .map(appointment -> modelMapper.map(appointment, AppointmentResponseDTO.class))
+    public List<AppointmentDTO> findAllByUserId(UUID id) {
+        return appointmentRepository.findAllByUserId(id).stream()
+                .map(appointment -> modelMapper.map(appointment, AppointmentDTO.class))
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<AppointmentDTO> findAllByMasterId(UUID id) {
+        return appointmentRepository.findAllByMasterId(id).stream()
+                .map(appointment -> modelMapper.map(appointment, AppointmentDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AppointmentDTO> findAllByUserAndStatus(UUID id, AppointmentStatusEnum status) {
+        return appointmentRepository.findAllByUserAndStatus(id, status).stream()
+                .map(appointment -> modelMapper.map(appointment, AppointmentDTO.class))
+                .collect(Collectors.toList());
+    }
 }

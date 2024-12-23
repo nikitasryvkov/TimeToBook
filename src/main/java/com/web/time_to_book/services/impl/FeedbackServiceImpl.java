@@ -10,17 +10,13 @@ import org.springframework.stereotype.Service;
 
 import com.web.time_to_book.dtos.request.FeedbackRequestDTO;
 import com.web.time_to_book.dtos.response.FeedbackDTO;
-import com.web.time_to_book.dtos.response.FeedbackResponseDTO;
+import com.web.time_to_book.exceptions.appointment.AppointmentNotFoundException;
 import com.web.time_to_book.exceptions.feedback.FeedbackNotFoundException;
 import com.web.time_to_book.exceptions.feedback.InvalidFeedbackDataException;
-import com.web.time_to_book.exceptions.serviceProduct.ServiceProductNotFoundException;
-import com.web.time_to_book.exceptions.user.UserNotFoundException;
+import com.web.time_to_book.models.Appointment;
 import com.web.time_to_book.models.Feedback;
-import com.web.time_to_book.models.ServiceProduct;
-import com.web.time_to_book.models.User;
+import com.web.time_to_book.repositories.AppointmentRepository;
 import com.web.time_to_book.repositories.FeedbackRepository;
-import com.web.time_to_book.repositories.ServiceProductRepository;
-import com.web.time_to_book.repositories.UserRepository;
 import com.web.time_to_book.services.FeedbackService;
 import com.web.time_to_book.utils.validation.ValidationUtil;
 
@@ -30,8 +26,7 @@ import jakarta.validation.ConstraintViolation;
 public class FeedbackServiceImpl implements FeedbackService {
 
     private FeedbackRepository feedbackRepository;
-    private ServiceProductRepository serviceProductRepository;
-    private UserRepository userRepository;
+    private AppointmentRepository appointmentRepository;
     private ModelMapper modelMapper;
     private final ValidationUtil validationUtil;
 
@@ -41,10 +36,9 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Autowired
     public void setFeedbackServiceImpl(FeedbackRepository feedbackRepository,
-            ServiceProductRepository serviceProductRepository, UserRepository userRepository, ModelMapper modelMapper) {
+            AppointmentRepository appointmentRepository, ModelMapper modelMapper) {
         this.feedbackRepository = feedbackRepository;
-        this.serviceProductRepository = serviceProductRepository;
-        this.userRepository = userRepository;
+        this.appointmentRepository = appointmentRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -59,14 +53,9 @@ public class FeedbackServiceImpl implements FeedbackService {
             throw new InvalidFeedbackDataException();
         }
 
-        ServiceProduct serviceProduct = serviceProductRepository.findById(feedbackDTO.getServiceId())
-                .orElseThrow(() -> new ServiceProductNotFoundException(feedbackDTO.getServiceId()));
-        User user = userRepository.findById(feedbackDTO.getCreatedById())
-                .orElseThrow(() -> new UserNotFoundException(feedbackDTO.getCreatedById()));
-        Feedback feedback = new Feedback(
-                feedbackDTO.getText(),
-                serviceProduct,
-                user,
+        Appointment appointment = appointmentRepository.findById(feedbackDTO.getAppointmentId())
+                .orElseThrow(() -> new AppointmentNotFoundException(feedbackDTO.getAppointmentId()));
+        Feedback feedback = new Feedback(feedbackDTO.getText(), appointment,
                 feedbackDTO.getEstimation());
 
         feedbackRepository.save(feedback);
@@ -85,21 +74,18 @@ public class FeedbackServiceImpl implements FeedbackService {
 
         Feedback feedback = feedbackRepository.findById(id).orElseThrow(() -> new FeedbackNotFoundException(id));
         feedback.setText(feedbackDTO.getText());
-        ServiceProduct serviceProduct = serviceProductRepository.findById(feedbackDTO.getServiceId())
-                .orElseThrow(() -> new ServiceProductNotFoundException(feedbackDTO.getServiceId()));
-        feedback.setService(serviceProduct);
-        User user = userRepository.findById(feedbackDTO.getCreatedById())
-                .orElseThrow(() -> new UserNotFoundException(feedbackDTO.getCreatedById()));
-        feedback.setCreatedBy(user);
+        Appointment appointment = appointmentRepository.findById(feedbackDTO.getAppointmentId())
+                .orElseThrow(() -> new AppointmentNotFoundException(feedbackDTO.getAppointmentId()));
+        feedback.setAppointment(appointment);
         feedback.setEstimation(feedbackDTO.getEstimation());
 
         feedbackRepository.update(feedback);
     }
 
     @Override
-    public List<FeedbackResponseDTO> findAllFeedbacks() {
+    public List<FeedbackDTO> findAllFeedbacks() {
         return feedbackRepository.findAll().stream()
-                .map(feedback -> modelMapper.map(feedback, FeedbackResponseDTO.class))
+                .map(feedback -> modelMapper.map(feedback, FeedbackDTO.class))
                 .collect(Collectors.toList());
     }
 
@@ -111,9 +97,20 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
-    public List<FeedbackResponseDTO> findAllFeedbacksById(UUID id) {
-        return feedbackRepository.findAllBy(id).stream()
-                .map(feedback -> modelMapper.map(feedback, FeedbackResponseDTO.class)).collect(Collectors.toList());
+    public List<FeedbackDTO> findAllFeedbacksByUserId(UUID id) {
+        return feedbackRepository.findAllByUserId(id).stream()
+                .map(feedback -> modelMapper.map(feedback, FeedbackDTO.class)).collect(Collectors.toList());
     }
 
+    @Override
+    public List<FeedbackDTO> findAllFeedbacksByMasterId(UUID id) {
+        return feedbackRepository.findAllByMasterId(id).stream()
+                .map(feedback -> modelMapper.map(feedback, FeedbackDTO.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<FeedbackDTO> findAllFeedbackByServiceId(UUID id) {
+        return feedbackRepository.findAllByServiceId(id).stream()
+                .map(feedback -> modelMapper.map(feedback, FeedbackDTO.class)).collect(Collectors.toList());
+    }
 }

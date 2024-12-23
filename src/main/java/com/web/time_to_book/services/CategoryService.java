@@ -8,7 +8,7 @@ import com.web.time_to_book.dtos.CategoryDTO;
 public interface CategoryService {
     void addCategory(CategoryDTO userDTO);
 
-    void updateCategory(UUID id, CategoryDTO userDTO);
+    void updateCategory(UUID id, CategoryDTO categoryDTO);
 
     List<CategoryDTO> findAllCategories();
 
