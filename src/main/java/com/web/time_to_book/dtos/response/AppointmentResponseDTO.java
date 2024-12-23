@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class AppointmentResponseDTO {
+    private UUID id;
     private LocalDateTime createdAt;
     private LocalDateTime recordTime;
     private UUID clientId;
@@ -19,6 +20,10 @@ public class AppointmentResponseDTO {
     }
 
     protected AppointmentResponseDTO() {
+    }
+
+    public UUID getId() {
+        return id;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -43,6 +48,10 @@ public class AppointmentResponseDTO {
 
     public String getStatus() {
         return status;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {

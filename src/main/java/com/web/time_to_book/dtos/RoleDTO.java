@@ -1,20 +1,19 @@
 package com.web.time_to_book.dtos;
 
-import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.validator.constraints.Length;
+
+import com.web.time_to_book.models.enums.UserRoles;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 public class RoleDTO {
     private UUID id;
-    private String name;
-    private Set<UUID> usersId;
+    private UserRoles name;
 
-    public RoleDTO(UUID id, String name) {
-        this.id = id;
+    public RoleDTO(UserRoles name) {
         this.name = name;
     }
 
@@ -32,19 +31,11 @@ public class RoleDTO {
     @NotNull
     @NotEmpty
     @Length(min = 3, message = "Role name must be more than two characters")
-    public String getName() {
+    public UserRoles getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(UserRoles name) {
         this.name = name;
-    }
-
-    public Set<UUID> getUsersId() {
-        return usersId;
-    }
-
-    public void setUsersId(Set<UUID> usersId) {
-        this.usersId = usersId;
     }
 }

@@ -1,6 +1,9 @@
 package com.web.time_to_book.dtos.response;
 
+import java.util.UUID;
+
 public class UserResponseDTO {
+    private UUID id;
     private String firstName;
     private String lastName;
     private String username;
@@ -22,6 +25,10 @@ public class UserResponseDTO {
     }
 
     protected UserResponseDTO() {
+    }
+
+    public UUID getId() {
+        return id;
     }
 
     public String getFirstName() {
@@ -54,6 +61,10 @@ public class UserResponseDTO {
 
     public Long getNumberOfAppointments() {
         return numberOfAppointments;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public void setFirstName(String firstName) {

@@ -1,5 +1,7 @@
 package com.web.time_to_book.dtos.request;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class UserRequestDTO {
     public String id;
     private String firstName;
@@ -9,15 +11,20 @@ public class UserRequestDTO {
     private String password;
     private String phoneNumber;
     private String avatarURL;
-    private String roleName;
 
-    public UserRequestDTO(String firstName, String lastName, String username, String email, String password,
-            String phoneNUmber) {
+    public UserRequestDTO(String firstName, String lastName, String username, String email, String phoneNUmber,
+            String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.email = email;
+        this.phoneNumber = phoneNUmber;
         this.password = password;
+    }
+
+    public UserRequestDTO(String firstName, String lastName, String phoneNUmber) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.phoneNumber = phoneNUmber;
     }
 
@@ -28,36 +35,38 @@ public class UserRequestDTO {
         return id;
     }
 
+    @NotBlank(message = "Имя обязательно")
     public String getFirstName() {
         return firstName;
     }
 
+    @NotBlank(message = "Фамилия обязательна")
     public String getLastName() {
         return lastName;
     }
 
+    @NotBlank(message = "Никнейм обязателен")
     public String getUsername() {
         return username;
     }
 
+    @NotBlank(message = "Почта обязательна")
     public String getEmail() {
         return email;
     }
 
+    @NotBlank(message = "Пароль обязателен")
     public String getPassword() {
         return password;
     }
 
+    @NotBlank(message = "Номер телефона обязателен")
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
     public String getAvatarURL() {
         return avatarURL;
-    }
-
-    public String getRoleName() {
-        return roleName;
     }
 
     public void setId(String id) {
@@ -90,9 +99,5 @@ public class UserRequestDTO {
 
     public void setAvatarURL(String avatarURL) {
         this.avatarURL = avatarURL;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
     }
 }

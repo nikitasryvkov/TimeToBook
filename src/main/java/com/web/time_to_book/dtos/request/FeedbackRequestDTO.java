@@ -3,17 +3,18 @@ package com.web.time_to_book.dtos.request;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class FeedbackRequestDTO {
     private LocalDateTime createdAt;
     private String text;
-    private UUID serviceId;
-    private UUID createdById;
+    private UUID appointmentId;
     private Integer estimation;
 
-    public FeedbackRequestDTO(String text, UUID serviceId, UUID createdById, Integer estimation) {
+    public FeedbackRequestDTO(String text, UUID appointmentId, Integer estimation) {
         this.text = text;
-        this.serviceId = serviceId;
-        this.createdById = createdById;
+        this.appointmentId = appointmentId;
         this.estimation = estimation;
     }
 
@@ -29,18 +30,16 @@ public class FeedbackRequestDTO {
         return createdAt;
     }
 
+    @NotBlank
     public String getText() {
         return text;
     }
 
-    public UUID getServiceId() {
-        return serviceId;
+    public UUID getAppointmentId() {
+        return appointmentId;
     }
 
-    public UUID getCreatedById() {
-        return createdById;
-    }
-
+    @NotNull
     public Integer getEstimation() {
         return estimation;
     }
@@ -53,12 +52,8 @@ public class FeedbackRequestDTO {
         this.text = text;
     }
 
-    public void setServiceId(UUID serviceId) {
-        this.serviceId = serviceId;
-    }
-
-    public void setCreatedById(UUID createdById) {
-        this.createdById = createdById;
+    public void setAppointmentId(UUID appointmentId) {
+        this.appointmentId = appointmentId;
     }
 
     public void setEstimation(Integer estimation) {

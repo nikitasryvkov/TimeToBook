@@ -3,6 +3,7 @@ package com.web.time_to_book.dtos.response;
 import java.util.UUID;
 
 public class ServiceProductResponseDTO {
+    private UUID id;
     private String title;
     private String description;
     private UUID categoryId;
@@ -18,6 +19,10 @@ public class ServiceProductResponseDTO {
     }
 
     protected ServiceProductResponseDTO() {
+    }
+
+    public UUID getId() {
+        return id;
     }
 
     public String getTitle() {
@@ -38,6 +43,10 @@ public class ServiceProductResponseDTO {
 
     public UUID getCreatedById() {
         return createdById;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public void setTitle(String title) {

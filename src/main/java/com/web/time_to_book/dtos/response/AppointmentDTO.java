@@ -3,14 +3,17 @@ package com.web.time_to_book.dtos.response;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+
 public class AppointmentDTO {
     private UUID id;
     private LocalDateTime createdAt;
     private LocalDateTime recordTime;
     private UUID clientId;
-    private String clientName;
+    private String clientFirstName;
     private UUID masterId;
-    private String masterName;
+    private String masterFirstName;
     private UUID serviceId;
     private String serviceTitle;
     private String status;
@@ -21,9 +24,9 @@ public class AppointmentDTO {
         this.createdAt = createdAt;
         this.recordTime = recordTime;
         this.clientId = clientId;
-        this.clientName = clientName;
+        this.clientFirstName = clientName;
         this.masterId = masterId;
-        this.masterName = masterName;
+        this.masterFirstName = masterName;
         this.serviceId = serviceId;
         this.serviceTitle = serviceTitle;
         this.status = status;
@@ -40,6 +43,8 @@ public class AppointmentDTO {
         return createdAt;
     }
 
+    @NotNull(message = "Дата обязательна")
+    @PastOrPresent(message = "Некорректная дата")
     public LocalDateTime getRecordTime() {
         return recordTime;
     }
@@ -48,16 +53,16 @@ public class AppointmentDTO {
         return clientId;
     }
 
-    public String getClientName() {
-        return clientName;
+    public String getClientFirstName() {
+        return clientFirstName;
     }
 
     public UUID getMasterId() {
         return masterId;
     }
 
-    public String getMasterName() {
-        return masterName;
+    public String getMasterFirstName() {
+        return masterFirstName;
     }
 
     public UUID getServiceId() {
@@ -88,16 +93,16 @@ public class AppointmentDTO {
         this.clientId = clientId;
     }
 
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
+    public void setClientFirstName(String clientName) {
+        this.clientFirstName = clientName;
     }
 
     public void setMasterId(UUID masterId) {
         this.masterId = masterId;
     }
 
-    public void setMasterName(String masterName) {
-        this.masterName = masterName;
+    public void setMasterFirstName(String masterName) {
+        this.masterFirstName = masterName;
     }
 
     public void setServiceId(UUID serviceId) {

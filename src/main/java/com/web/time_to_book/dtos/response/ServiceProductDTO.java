@@ -10,10 +10,10 @@ public class ServiceProductDTO {
     private String categoryTitle;
     private Long price;
     private UUID createdById;
-    private String createdByName;
+    private String createdByFirstName;
 
     public ServiceProductDTO(UUID id, String title, String description, UUID categoryId, String categoryTitle,
-            Long price, UUID createdById, String createdByName) {
+            Long price, UUID createdById, String createdByFirstName) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -21,7 +21,7 @@ public class ServiceProductDTO {
         this.categoryTitle = categoryTitle;
         this.price = price;
         this.createdById = createdById;
-        this.createdByName = createdByName;
+        this.createdByFirstName = createdByFirstName;
     }
 
     protected ServiceProductDTO() {
@@ -55,8 +55,8 @@ public class ServiceProductDTO {
         return createdById;
     }
 
-    public String getCreatedByName() {
-        return createdByName;
+    public String getCreatedByFirstName() {
+        return createdByFirstName;
     }
 
     public void setId(UUID id) {
@@ -87,7 +87,7 @@ public class ServiceProductDTO {
         this.createdById = createdById;
     }
 
-    public void setCreatedByName(String createdByName) {
-        this.createdByName = createdByName;
+    public void setCreatedByFirstName(String createdByName) {
+        this.createdByFirstName = createdByName;
     }
 }

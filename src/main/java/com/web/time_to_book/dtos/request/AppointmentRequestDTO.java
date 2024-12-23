@@ -3,6 +3,9 @@ package com.web.time_to_book.dtos.request;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotNull;
+
 public class AppointmentRequestDTO {
     private LocalDateTime createdAt;
     private LocalDateTime recordTime;
@@ -10,6 +13,15 @@ public class AppointmentRequestDTO {
     private UUID masterId;
     private UUID serviceId;
     private String status;
+
+    public AppointmentRequestDTO(LocalDateTime createdAt, LocalDateTime recordTime, UUID clientId, UUID masterId,
+            UUID serviceId) {
+        this.createdAt = createdAt;
+        this.recordTime = recordTime;
+        this.clientId = clientId;
+        this.masterId = masterId;
+        this.serviceId = serviceId;
+    }
 
     public AppointmentRequestDTO(LocalDateTime createdAt, LocalDateTime recordTime, UUID clientId, UUID masterId,
             UUID serviceId, String status) {
@@ -21,10 +33,6 @@ public class AppointmentRequestDTO {
         this.status = status;
     }
 
-    public AppointmentRequestDTO(LocalDateTime recordTime) {
-        this.recordTime = recordTime;
-    }
-
     protected AppointmentRequestDTO() {
     }
 
@@ -32,6 +40,8 @@ public class AppointmentRequestDTO {
         return createdAt;
     }
 
+    @NotNull(message = "Дата обязательна")
+    @FutureOrPresent(message = "Некорректная дата")
     public LocalDateTime getRecordTime() {
         return recordTime;
     }
