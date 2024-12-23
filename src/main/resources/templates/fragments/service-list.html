@@ -1,0 +1,16 @@
+<div th:fragment="serviceList">
+    <div class="row">
+        <div class="col" th:each="s : ${service}">
+            <div class="d-grid gap-4 m-2">
+                <button type="button" class="btn btn-dark">
+                    <a th:href="@{/service/id/{id}(id=${s.id})}" class="btn btn-dark">
+                        <h4 th:text="${s.title}"></h4>
+                    </a>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

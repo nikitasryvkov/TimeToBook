@@ -15,31 +15,23 @@
         <div class="col-md-3">
             <div class="card mb-3">
                 <div class="card-body" th:object="${model}">
-                    <h5 class="card-title text-center">Информация о записи</h5>
+                    <h5 class="card-title text-center">Информация об отзыве</h5>
                     <dl class="row">
                         <dt class="col-sm-6">Дата создания</dt>
                         <dd class="col-sm-6 text-secondary" th:text="*{createdAt}"></dd>
 
-                        <dt class="col-sm-6">Дата записи</dt>
-                        <dd class="col-sm-6 text-secondary" th:text="*{recordTime}"></dd>
-
-                        <dt class="col-sm-6">Имя мастера</dt>
-                        <dd class="col-sm-6 text-secondary" th:text="*{masterName}"></dd>
+                        <dt class="col-sm-6">Текст</dt>
+                        <dd class="col-sm-6 text-secondary" th:text="*{text}"></dd>
 
                         <dt class="col-sm-6">Название услуги</dt>
-                        <dd class="col-sm-6 text-secondary" th:text="*{serviceTitle}"></dd>
+                        <dd class="col-sm-6 text-secondary" th:text="*{title}"></dd>
 
-                        <dt class="col-sm-6">Статус</dt>
-                        <dd class="col-sm-6 text-secondary" th:text="*{status}"></dd>
+                        <dt class="col-sm-6">Имя мастера</dt>
+                        <dd class="col-sm-6 text-secondary" th:text="*{masterFirstName}"></dd>
+
+                        <dt class="col-sm-6">Оценка</dt>
+                        <dd class="col-sm-6 text-secondary" th:text="*{estimation}"></dd>
                     </dl>
-
-                    <div class="text-center m-1" sec:authorize="hasRole('MODERATOR')">
-                        <a class="btn btn-secondary w-100" th:href="@{/appointment/update/master/{id}(id=${model.id})}">Редактировать</a>
-                    </div>
-
-                    <div class="text-center m-1" sec:authorize="hasRole('ADMIN')">
-                        <a class="btn btn-secondary w-100" th:href="@{/appointment/update/admin/{id}(id=${model.id})}">Редактировать</a>
-                    </div>
                 </div>
             </div>
         </div>

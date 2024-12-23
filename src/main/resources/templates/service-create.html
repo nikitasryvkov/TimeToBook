@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" class="h-100" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Запись на услугу</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+</head>
+<body class="d-flex flex-column h-100 bg-light">
+<div th:insert="~{fragments/header}"></div>
+<main class="form-signin w-100 m-auto">
+    <div class="container w-50">
+        <h3 class="mb-3 d-flex justify-content-center">Редактирование услуги</h3>
+        <form
+        sec:authorize="hasRole('MODERATOR')"
+        th:action="@{/service/create/master}"
+        th:method="post"
+        th:object="${form}"
+        class="needs-validation"
+        novalidate="">
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <label for="title" class="form-label">Название</label>
+                    <input th:field="*{title}" type="text" class="form-control" name="title" id="title" placeholder="" value="" required="">
+                    <small th:if="${#fields.hasErrors('title')}"
+                        th:errors="*{title}"
+                        class="text-danger">Error message</small>
+                </div>
+
+                <div class="col-sm-6">
+                    <label for="lastName" class="form-label">Описание</label>
+                    <input th:field="*{description}" type="text" class="form-control" name="description" id="description" placeholder="" value="" required="">
+                    <small th:if="${#fields.hasErrors('description')}"
+                               th:errors="*{description}"
+                               class="text-danger">Error message</small>
+                </div>
+
+                <div class="col-12">
+                    <label for="lastName" class="form-label">Категория</label>
+                    <select th:field="*{categoryId}" name="categoryId" class="form-control custom-select mr-sm-2" id="category" required>
+                        <option
+                            th:each="option : ${category}"
+                            th:value="${option.id}"
+                            th:text="${option.name}"
+                            th:selected="${form.categoryId == option.id}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-12">
+                    <label for="address" class="form-label">Цена</label>
+                    <input th:field="*{price}" type="text" class="form-control" id="price" placeholder="" required="">
+                    <small th:if="${#fields.hasErrors('price')}"
+                        th:errors="*{price}"
+                        class="text-danger">Error message</small>
+                </div>
+            </div>
+            <div class="pt-4">
+                <button class="w-100 btn btn-primary btn-lg pt-1" type="submit">Сохранить</button>
+            </div>
+        </form>
+        <form
+        sec:authorize="hasRole('ADMIN')"
+        th:action="@{/service/create/admin}"
+        th:method="post"
+        th:object="${form}"
+        class="needs-validation"
+        novalidate="">
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <label for="title" class="form-label">Название</label>
+                    <input th:field="*{title}" type="text" class="form-control" name="title" id="title" placeholder="" value="" required="">
+                    <small th:if="${#fields.hasErrors('title')}"
+                        th:errors="*{title}"
+                        class="text-danger">Error message</small>
+                </div>
+
+                <div class="col-sm-6">
+                    <label for="description" class="form-label">Описание</label>
+                    <input th:field="*{description}" type="text" class="form-control" name="description" id="description" placeholder="" value="" required="">
+                    <small th:if="${#fields.hasErrors('description')}"
+                               th:errors="*{description}"
+                               class="text-danger">Error message</small>
+                </div>
+
+                <div class="col-12">
+                    <label for="category" class="form-label">Категория</label>
+                    <select th:field="*{categoryId}" name="categoryId" class="form-control custom-select mr-sm-2" id="category" required>
+                        <option
+                            th:each="option : ${category}"
+                            th:value="${option.id}"
+                            th:text="${option.name}"
+                            th:selected="${form.categoryId == option.id}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-12">
+                    <label for="address" class="form-label">Цена</label>
+                    <input th:field="*{price}" type="text" class="form-control" id="price" placeholder="" required="">
+                    <small th:if="${#fields.hasErrors('price')}"
+                        th:errors="*{price}"
+                        class="text-danger">Error message</small>
+                </div>
+
+                <div class="col-12">
+                    <label for="master" class="form-label">Мастер</label>
+                    <select th:field="*{createdById}" name="master" class="form-control custom-select mr-sm-2" id="master" required>
+                        <option
+                            th:each="option : ${master}"
+                            th:value="${option.id}"
+                            th:text="${option.userFirstName}"
+                            th:selected="${form.createdById == option.id}">
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="pt-4">
+                <button class="w-100 btn btn-primary btn-lg pt-1" type="submit">Сохранить</button>
+            </div>
+        </form>
+    </div>
+</main>
+<div th:insert="~{fragments/footer}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+</body>
+</html>
